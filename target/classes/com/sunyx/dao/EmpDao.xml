@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunyx.dao.EmpDao">
+    <select id="getEmpById" parameterType="int" resultType="emp">
+      SELECT id,name,salary FROM t_emp WHERE id = #{id}
+    </select>
+    <select id="getEmpByName1" parameterType="string" resultType="emp">
+       SELECT id,name,salary FROM t_emp WHERE name LIKE #{name}
+    </select>
+    <!--${}里面必须写value-->
+    <select id="getEmpByName" parameterType="string" resultType="emp">
+        SELECT id,name,salary FROM t_emp WHERE name LIKE '%${value}%'
+    </select>
+    <insert id="insertEmp1" parameterType="emp">
+        INSERT INTO t_emp(id,name,salary) VALUES (emp_seq.NEXTVAL,#{name},#{salary})
+    </insert>
+    <insert id="insertEmp" parameterType="emp">
+        <selectKey keyProperty="id"  order="BEFORE" resultType="int">
+             select emp_seq.NEXTVAL as id from dual
+        </selectKey>
+        INSERT INTO t_emp(id,name,salary) VALUES (#{id},#{name},#{salary})
+    </insert>
+    <update id="updateEmp" parameterType="emp">
+        UPDATE t_emp SET name =#{name} where id=#{id}
+    </update>
+    <delete id="deleteEmp" parameterType="int">
+        DELETE FROM t_emp WHERE id=#{id}
+    </delete>
+    <select id="getEmpByIdMap" parameterType="int" resultType="java.util.HashMap">
+        SELECT id,name,salary FROM t_emp WHERE id = #{id}
+    </select>
+    <select id="getEmpByQueryVo" parameterType="empvo" resultType="emp">
+        SELECT id,name,salary FROM t_emp WHERE name LIKE '%${emp.name}%'
+    </select>
+    <select id="getCount" resultType="int">
+        SELECT count(*) FROM t_emp
+    </select>
+    <resultMap id="empMap" type="emp">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="salary" property="salary"/>
+        <result column="marry" property="marry" jdbcType="CHAR" javaType="Boolean"/>
+        <result column="birthday" property="birthday" />
+        <result column="login" property="login"/>
+    </resultMap>
+    <select id="getEmpByIdMap1" parameterType="int" resultMap="empMap">
+        SELECT id,name,salary,birthday,marry,login FROM t_emp WHERE id = #{id}
+    </select>
+    <select id="getEmpByWhere" parameterType="emp" resultMap="empMap">
+        SELECT id,name,salary,birthday,marry,login FROM t_emp
+        <where>
+            <if test="id !=null">
+                and id = #{id}
+            </if>
+            <if test="name !=null and name!=''">
+                 and name like '%${name}%'
+            </if>
+        </where>
+    </select>
+    <sql id="emp_column">
+        id,name,salary,birthday,marry,login
+    </sql>
+    <select id="getEmpByIds" parameterType="empvo" resultMap="empMap">
+        SELECT <include refid="emp_column"/> FROM t_emp
+        <where>
+            <foreach collection="ids" item="id" open="id in (" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunyx.dao.EmpDao">
+    <select id="getEmpById" parameterType="int" resultType="emp">
+      SELECT id,name,salary FROM t_emp WHERE id = #{id}
+    </select>
+    <select id="getEmpByName1" parameterType="string" resultType="emp">
+       SELECT id,name,salary FROM t_emp WHERE name LIKE #{name}
+    </select>
+    <!--${}里面必须写value-->
+    <select id="getEmpByName" parameterType="string" resultType="emp">
+        SELECT id,name,salary FROM t_emp WHERE name LIKE '%${value}%'
+    </select>
+    <insert id="insertEmp1" parameterType="emp">
+        INSERT INTO t_emp(id,name,salary) VALUES (emp_seq.NEXTVAL,#{name},#{salary})
+    </insert>
+    <insert id="insertEmp" parameterType="emp">
+        <selectKey keyProperty="id"  order="BEFORE" resultType="int">
+             select emp_seq.NEXTVAL as id from dual
+        </selectKey>
+        INSERT INTO t_emp(id,name,salary) VALUES (#{id},#{name},#{salary})
+    </insert>
+    <update id="updateEmp" parameterType="emp">
+        UPDATE t_emp SET name =#{name} where id=#{id}
+    </update>
+    <delete id="deleteEmp" parameterType="int">
+        DELETE FROM t_emp WHERE id=#{id}
+    </delete>
+</mapper>

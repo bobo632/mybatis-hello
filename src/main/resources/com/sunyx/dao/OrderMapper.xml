@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunyx.dao.OrderMapper">
+    <select id="getOrderUser" resultType="orderuser">
+        select o.id,o.user_id userId,o.numbers,o.createtime,o.note,u.username,u.address
+        from t_order o LEFT JOIN t_user u ON u.id=o.user_id
+    </select>
+
+    <resultMap id="order_to_user" type="order">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="numbers" column="numbers"/>
+        <result property="createtime" column="createtime"/>
+        <result property="note" column="note"/>
+        <association property="user" javaType="user">
+            <id property="id" column="user_id"/>
+            <result property="username" column="username"/>
+            <result property="sex" column="sex"/>
+            <result property="address" column="address"/>
+            <result property="birthday" column="birthday"/>
+        </association>
+    </resultMap>
+    <select id="getOrderUser2" resultMap="order_to_user">
+         select o.id,o.user_id ,o.numbers,o.createtime,o.note,u.username,u.address,u.sex,u.id,u.birthday
+        from t_order o LEFT JOIN t_user u ON u.id=o.user_id
+    </select>
+</mapper>

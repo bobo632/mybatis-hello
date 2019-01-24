@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunyx.dao.UserMapper">
+    <resultMap id="user_to_order" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="sex" column="sex"/>
+        <result property="address" column="address"/>
+        <result property="birthday" column="birthday"/>
+        <collection property="orders" ofType="order">
+            <id property="id" column="oid"/>
+            <result property="userId" column="user_id"/>
+            <result property="numbers" column="numbers"/>
+            <result property="createtime" column="createtime"/>
+            <result property="note" column="note"/>
+        </collection>
+    </resultMap>
+    <select id="getUserOrder" resultMap="user_to_order">
+        select o.id oid,o.user_id ,o.numbers,o.createtime,o.note,u.username,u.address,u.sex,u.id,u.birthday
+        from t_user u LEFT JOIN t_order o ON u.id=o.user_id
+    </select>
+</mapper>
